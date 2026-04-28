@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Token Slot Machine</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <h1>Token Slot</h1>
+        <button id="admin-open" class="ghost-btn" aria-label="Open admin panel">Admin</button>
+      </header>
+
+      <section class="bank">
+        <div>
+          <p class="label">Balance</p>
+          <p id="balance" class="value">0</p>
+        </div>
+        <div>
+          <p class="label">Last Win</p>
+          <p id="last-win" class="value">0</p>
+        </div>
+        <div>
+          <p class="label">Bet / Spin</p>
+          <p class="value">1</p>
+        </div>
+      </section>
+
+      <section class="machine" aria-live="polite">
+        <div id="reel-1" class="reel">🍒</div>
+        <div id="reel-2" class="reel">🍋</div>
+        <div id="reel-3" class="reel">7️⃣</div>
+      </section>
+
+      <button id="spin-btn" class="spin-btn">Spin (1 token)</button>
+      <p id="status" class="status">Add tokens from Admin to start playing.</p>
+
+      <section class="info-card">
+        <h2>Paytable</h2>
+        <ul>
+          <li>💎 💎 💎 = 50 tokens</li>
+          <li>7️⃣ 7️⃣ 7️⃣ = 20 tokens</li>
+          <li>🔔 🔔 🔔 = 5 tokens</li>
+          <li>🍒 🍒 ✨ = 2 tokens</li>
+          <li>🍋 🍋 ✨ = 1 token</li>
+        </ul>
+        <p class="fine-print">Target RTP: 93% (7% house edge over the long run).</p>
+      </section>
+    </main>
+
+    <dialog id="admin-dialog">
+      <form method="dialog" class="admin-form" id="admin-form">
+        <h3>Admin Token Control</h3>
+        <label>
+          Password
+          <input type="password" id="admin-password" required autocomplete="off" />
+        </label>
+        <label>
+          Add Tokens
+          <input type="number" id="token-amount" required min="1" step="1" />
+        </label>
+        <div class="admin-actions">
+          <button value="cancel" type="button" id="admin-cancel" class="ghost-btn">Cancel</button>
+          <button type="submit" class="primary-btn">Add</button>
+        </div>
+        <p id="admin-msg" class="admin-msg"></p>
+      </form>
+    </dialog>
+
+    <script src="script.js"></script>
+  </body>
+</html>
