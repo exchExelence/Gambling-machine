@@ -315,14 +315,9 @@ function validateBet() {
 }
 
 function openAdmin() {
-  const password = prompt("Enter admin password:");
-  if (password !== ADMIN_PASSWORD) {
-    resultTextEl.textContent = "Incorrect admin password.";
-    return;
-  }
   adminModal.classList.remove("hidden");
   overlay.classList.remove("hidden");
-  adminPassword.value = password;
+  adminPassword.value = "";
   adminAmount.value = "50";
 }
 

@@ -386,11 +386,15 @@ button:hover {
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: 20;
 }
 
 .overlay {
+  z-index: 20;
   background: rgba(0, 0, 0, 0.6);
+}
+
+.modal {
+  z-index: 21;
 }
 
 .hidden {
