@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Token Casino</title>
+  <title>Token Casino - Poker</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -13,13 +13,13 @@
         <p class="version-label" id="version-label">v26</p>
         <div>
           <p class="eyebrow">Private Game</p>
-          <h1>Token Casino</h1>
+          <h1>Token Poker</h1>
         </div>
       </div>
       <div class="topbar-end">
         <a href="home.html" class="ghost-btn">← Home</a>
+        <a href="index.html" class="ghost-btn">Slots →</a>
         <a href="blackjack.html" class="ghost-btn">Blackjack →</a>
-        <a href="poker.html" class="ghost-btn">Poker →</a>
         <a href="roulette.html" class="ghost-btn">Roulette →</a>
         <button id="admin-btn" class="ghost-btn">ADMIN</button>
         <div class="admin-dropdown hidden" id="admin-dropdown">
@@ -56,19 +56,42 @@
           <strong id="cash-value">$0.00</strong>
         </article>
         <article class="status-card">
-          <span>Current bet</span>
+          <span>Current Bet</span>
           <strong id="bet-display">0</strong>
         </article>
         <article class="status-card">
-          <span>Last result</span>
-          <strong id="result-text">Ready to spin</strong>
+          <span>Status</span>
+          <strong id="result-text">Place your bet</strong>
         </article>
       </section>
 
-      <section class="reel-area">
-        <div class="reel" id="reel-0">0</div>
-        <div class="reel" id="reel-1">0</div>
-        <div class="reel" id="reel-2">0</div>
+      <section class="poker-table">
+        <div class="poker-center">
+          <div class="community-cards-section">
+            <div class="community-label">Community Cards</div>
+            <div class="community-cards" id="community-cards"></div>
+          </div>
+          <div class="dealer-info" id="dealer-info"></div>
+        </div>
+
+        <div class="poker-hand-section">
+          <div class="opponent-area">
+            <div class="opponent-label">Opponent</div>
+            <div class="opponent-status" id="opponent-status">Fold</div>
+            <div class="opponent-hand" id="opponent-hand"></div>
+          </div>
+
+          <div class="game-divider"></div>
+
+          <div class="player-area">
+            <div class="player-label">Your Hand</div>
+            <div class="player-hand" id="player-hand"></div>
+            <div class="player-stats">
+              <span>Best Hand: <strong id="best-hand">-</strong></span>
+              <span>Your Bet: <strong id="your-bet">0</strong></span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="controls">
@@ -76,31 +99,37 @@
           <button id="bet-down" class="control-btn">-</button>
           <input id="bet-input" type="number" min="0" value="0" />
           <button id="bet-up" class="control-btn">+</button>
+          <button id="max-btn" class="secondary-btn">Max Bet</button>
         </div>
         <div class="action-buttons">
-          <button id="max-btn" class="secondary-btn">Max Bet</button>
-          <button id="spin-btn" class="primary-btn">Spin</button>
-          <button id="stop-btn" class="secondary-btn hidden">Stop</button>
+          <button id="deal-btn" class="primary-btn">Deal</button>
+          <button id="fold-btn" class="secondary-btn hidden">Fold</button>
+          <button id="call-btn" class="secondary-btn hidden">Call</button>
+          <button id="raise-btn" class="secondary-btn hidden">Raise</button>
+          <button id="check-btn" class="secondary-btn hidden">Check</button>
+          <button id="all-in-btn" class="secondary-btn hidden">All In</button>
         </div>
       </section>
 
       <section class="paytable-card">
-        <h2>Pay Table</h2>
-        <div class="paytable-grid">
-          <div>3 Diamond</div><div>×50</div>
-          <div>3 Bell</div><div>×20</div>
-          <div>3 Plum</div><div>×10</div>
-          <div>3 Orange</div><div>×6</div>
-          <div>3 Lemon</div><div>×4</div>
-          <div>3 Cherry</div><div>×3</div>
-          <div>2 Cherry</div><div>×1.5</div>
-          <div>1 Cherry</div><div>×0.5</div>
+        <h2>Poker Hand Rankings</h2>
+        <div class="rules-grid">
+          <div>Royal Flush</div><div>A-K-Q-J-10 same suit</div>
+          <div>Straight Flush</div><div>5 cards in sequence, same suit</div>
+          <div>Four of a Kind</div><div>4 cards of same rank</div>
+          <div>Full House</div><div>3 of a kind + pair</div>
+          <div>Flush</div><div>5 cards same suit</div>
+          <div>Straight</div><div>5 cards in sequence</div>
+          <div>Three of a Kind</div><div>3 cards of same rank</div>
+          <div>Two Pair</div><div>2 different pairs</div>
+          <div>One Pair</div><div>2 cards of same rank</div>
+          <div>High Card</div><div>No combination</div>
         </div>
       </section>
     </main>
   </div>
 
   <script src="shared.js"></script>
-  <script src="script.js"></script>
+  <script src="poker.js"></script>
 </body>
 </html>

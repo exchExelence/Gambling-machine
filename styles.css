@@ -604,6 +604,151 @@ button:hover {
   border-top: 3px solid rgba(59, 130, 246, 0.3);
 }
 
+.game-card-poker {
+  border-top: 3px solid rgba(168, 85, 247, 0.3);
+}
+
+.game-card-roulette {
+  border-top: 3px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Poker specific styles */
+.poker-table {
+  display: grid;
+  gap: 40px;
+  min-height: 500px;
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.12), rgba(168, 85, 247, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 26px;
+  padding: 40px;
+  backdrop-filter: blur(16px);
+}
+
+.poker-center {
+  display: grid;
+  gap: 24px;
+  text-align: center;
+}
+
+.community-cards-section {
+  display: grid;
+  gap: 12px;
+}
+
+.community-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #dbeafe;
+}
+
+.community-cards {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-height: 120px;
+  align-items: center;
+}
+
+.card.back {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  font-size: 2rem;
+}
+
+.dealer-info {
+  font-size: 0.9rem;
+  color: #b9d4ef;
+  opacity: 0.8;
+}
+
+.poker-hand-section {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.opponent-area {
+  display: grid;
+  gap: 12px;
+  text-align: center;
+}
+
+.opponent-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #dbeafe;
+}
+
+.opponent-status {
+  font-size: 0.9rem;
+  color: #f87171;
+  font-weight: 600;
+}
+
+.opponent-hand {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-height: 120px;
+  align-items: center;
+}
+
+.player-area {
+  display: grid;
+  gap: 12px;
+  text-align: center;
+}
+
+.player-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #dbeafe;
+}
+
+.player-hand {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-height: 120px;
+  align-items: center;
+}
+
+.player-stats {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: #b9d4ef;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.player-stats span {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+@media (max-width: 720px) {
+  .poker-hand-section {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .opponent-area,
+  .player-area {
+    order: 1;
+  }
+  .game-divider {
+    order: 2;
+  }
+}
+
 /* Blackjack specific styles */
 .blackjack-table {
   display: grid;
@@ -689,6 +834,199 @@ button:hover {
 .rules-grid div:nth-child(odd) {
   color: #b9d4ef;
 }
+
+/* Roulette specific styles */
+.roulette-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.08), rgba(0, 0, 0, 0.15));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 26px;
+  padding: 40px;
+  backdrop-filter: blur(16px);
+  align-items: start;
+}
+
+.roulette-wheel-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.roulette-wheel {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.2);
+  border: 8px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.05s linear;
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  z-index: 10;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+canvas {
+  border-radius: 50%;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.result-display {
+  font-size: 3rem;
+  font-weight: 900;
+  padding: 20px 40px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  min-width: 150px;
+  text-align: center;
+  color: #fff;
+}
+
+.result-display.red {
+  background: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.result-display.black {
+  background: rgba(31, 41, 55, 0.5);
+  color: #d1d5db;
+}
+
+.result-display.green {
+  background: rgba(34, 197, 94, 0.3);
+  color: #86efac;
+}
+
+.betting-section {
+  display: grid;
+  gap: 24px;
+}
+
+.bet-types {
+  display: grid;
+  gap: 12px;
+}
+
+.bet-types h3,
+.number-bets h3 {
+  margin: 0;
+  color: #dbeafe;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bet-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.bet-btn {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid;
+  background: rgba(255, 255, 255, 0.05);
+  color: #edf2f7;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.bet-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.red-btn {
+  border-color: #ef4444;
+}
+
+.black-btn {
+  border-color: #1f2937;
+}
+
+.even-btn {
+  border-color: #3b82f6;
+}
+
+.odd-btn {
+  border-color: #f59e0b;
+}
+
+.high-btn {
+  border-color: #ec4899;
+}
+
+.low-btn {
+  border-color: #8b5cf6;
+}
+
+.number-bets {
+  display: grid;
+  gap: 12px;
+}
+
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+}
+
+.number-bet-btn {
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid;
+  background: rgba(255, 255, 255, 0.05);
+  color: #edf2f7;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.number-bet-btn:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 720px) {
+  .roulette-container {
+    grid-template-columns: 1fr;
+    padding: 24px;
+    gap: 24px;
+  }
+  
+  .roulette-wheel {
+    width: 250px;
+    height: 250px;
+  }
+  
+  canvas {
+    max-width: 250px;
+  }
+  
+  .number-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 
 @media (max-width: 720px) {
   .reel-area {

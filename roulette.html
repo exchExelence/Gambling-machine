@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Token Casino</title>
+  <title>Token Casino - Roulette</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -13,14 +13,14 @@
         <p class="version-label" id="version-label">v26</p>
         <div>
           <p class="eyebrow">Private Game</p>
-          <h1>Token Casino</h1>
+          <h1>Token Roulette</h1>
         </div>
       </div>
       <div class="topbar-end">
         <a href="home.html" class="ghost-btn">← Home</a>
+        <a href="index.html" class="ghost-btn">Slots →</a>
         <a href="blackjack.html" class="ghost-btn">Blackjack →</a>
         <a href="poker.html" class="ghost-btn">Poker →</a>
-        <a href="roulette.html" class="ghost-btn">Roulette →</a>
         <button id="admin-btn" class="ghost-btn">ADMIN</button>
         <div class="admin-dropdown hidden" id="admin-dropdown">
           <div class="admin-panel">
@@ -56,51 +56,69 @@
           <strong id="cash-value">$0.00</strong>
         </article>
         <article class="status-card">
-          <span>Current bet</span>
-          <strong id="bet-display">0</strong>
+          <span>Total Bets</span>
+          <strong id="total-bets">0</strong>
         </article>
         <article class="status-card">
-          <span>Last result</span>
-          <strong id="result-text">Ready to spin</strong>
+          <span>Status</span>
+          <strong id="result-text">Place your bets</strong>
         </article>
       </section>
 
-      <section class="reel-area">
-        <div class="reel" id="reel-0">0</div>
-        <div class="reel" id="reel-1">0</div>
-        <div class="reel" id="reel-2">0</div>
-      </section>
-
-      <section class="controls">
-        <div class="bet-controls">
-          <button id="bet-down" class="control-btn">-</button>
-          <input id="bet-input" type="number" min="0" value="0" />
-          <button id="bet-up" class="control-btn">+</button>
+      <section class="roulette-container">
+        <div class="roulette-wheel-section">
+          <div class="roulette-wheel" id="roulette-wheel">
+            <div class="wheel-pointer">▼</div>
+            <canvas id="roulette-canvas" width="300" height="300"></canvas>
+          </div>
+          <div class="result-display" id="result-display">Place bets to spin</div>
         </div>
-        <div class="action-buttons">
-          <button id="max-btn" class="secondary-btn">Max Bet</button>
-          <button id="spin-btn" class="primary-btn">Spin</button>
-          <button id="stop-btn" class="secondary-btn hidden">Stop</button>
+
+        <div class="betting-section">
+          <div class="bet-controls">
+            <button id="bet-down" class="control-btn">-</button>
+            <input id="bet-input" type="number" min="0" value="0" />
+            <button id="bet-up" class="control-btn">+</button>
+            <button id="max-btn" class="secondary-btn">Max Bet</button>
+          </div>
+
+          <div class="bet-types">
+            <h3>Select Bet Type</h3>
+            <div class="bet-buttons">
+              <button id="bet-red" class="bet-btn red-btn">Red (1:1)</button>
+              <button id="bet-black" class="bet-btn black-btn">Black (1:1)</button>
+              <button id="bet-even" class="bet-btn even-btn">Even (1:1)</button>
+              <button id="bet-odd" class="bet-btn odd-btn">Odd (1:1)</button>
+              <button id="bet-high" class="bet-btn high-btn">High 19-36 (1:1)</button>
+              <button id="bet-low" class="bet-btn low-btn">Low 1-18 (1:1)</button>
+            </div>
+          </div>
+
+          <div class="number-bets">
+            <h3>Number Bets (17:1)</h3>
+            <div class="number-grid" id="number-grid"></div>
+          </div>
+
+          <div class="action-buttons">
+            <button id="spin-btn" class="primary-btn">Place Bets & Spin</button>
+            <button id="clear-bets" class="secondary-btn">Clear All Bets</button>
+          </div>
         </div>
       </section>
 
       <section class="paytable-card">
-        <h2>Pay Table</h2>
-        <div class="paytable-grid">
-          <div>3 Diamond</div><div>×50</div>
-          <div>3 Bell</div><div>×20</div>
-          <div>3 Plum</div><div>×10</div>
-          <div>3 Orange</div><div>×6</div>
-          <div>3 Lemon</div><div>×4</div>
-          <div>3 Cherry</div><div>×3</div>
-          <div>2 Cherry</div><div>×1.5</div>
-          <div>1 Cherry</div><div>×0.5</div>
+        <h2>Roulette Payouts</h2>
+        <div class="rules-grid">
+          <div>Red or Black</div><div>Pays 1:1</div>
+          <div>Even or Odd</div><div>Pays 1:1</div>
+          <div>High (19-36) or Low (1-18)</div><div>Pays 1:1</div>
+          <div>Specific Number</div><div>Pays 17:1</div>
         </div>
       </section>
     </main>
   </div>
 
   <script src="shared.js"></script>
-  <script src="script.js"></script>
+  <script src="roulette.js"></script>
 </body>
 </html>
