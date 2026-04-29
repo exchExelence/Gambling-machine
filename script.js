@@ -1,5 +1,5 @@
 const STARTING_BALANCE = 0;
-const APP_VERSION = 6;
+const APP_VERSION = 9;
 const ADMIN_PASSWORD = "050211"; // Change this before sharing
 const symbolIcons = {
   diamond: "♦️",
