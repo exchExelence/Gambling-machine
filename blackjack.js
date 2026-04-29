@@ -94,12 +94,20 @@ function cardToString(card) {
   return `${card.rank}${card.suit}`;
 }
 
-function renderCards(hand, container) {
+function renderCards(hand, container, showHoleCard = true) {
   container.innerHTML = '';
-  for (let card of hand) {
+  for (let i = 0; i < hand.length; i++) {
     const cardEl = document.createElement('div');
     cardEl.className = 'card';
-    cardEl.textContent = cardToString(card);
+    
+    // If this is the dealer's second card and hole card is hidden, show card back
+    if (container.id === 'dealer-hand' && i === 1 && !showHoleCard) {
+      cardEl.textContent = '🂠';
+      cardEl.classList.add('card-back');
+    } else {
+      cardEl.textContent = cardToString(hand[i]);
+    }
+    
     container.appendChild(cardEl);
   }
 }
@@ -122,16 +130,18 @@ function updateUI(message = "") {
   
   playerValueEl.textContent = playerValue > 21 ? `BUST (${playerValue})` : playerValue;
   
-  if (gameState.gameOver || gameState.dealerHand.length > 1) {
+  // Show dealer value only when hole card is revealed or game is over
+  const showHoleCard = gameState.gameOver || gameState.dealerHand.length > 2;
+  if (showHoleCard) {
     dealerValueEl.textContent = dealerValue > 21 ? `BUST (${dealerValue})` : dealerValue;
-  } else if (gameState.dealerHand.length === 1) {
+  } else if (gameState.dealerHand.length >= 1) {
     dealerValueEl.textContent = '?';
   } else {
     dealerValueEl.textContent = '';
   }
   
   renderCards(gameState.playerHand, playerHandEl);
-  renderCards(gameState.dealerHand, dealerHandEl);
+  renderCards(gameState.dealerHand, dealerHandEl, showHoleCard);
 }
 
 function validateBet() {
@@ -277,15 +287,20 @@ function dealerPlay() {
   doubleBtn.classList.add("hidden");
   splitBtn.classList.add("hidden");
   
-  updateUI("Dealer's turn...");
+  updateUI("Dealer reveals hole card...");
   
-  while (calculateHandValue(gameState.dealerHand) < 17) {
-    gameState.dealerHand.push(drawCard());
-    updateUI();
-  }
-  
-  gameState.gameOver = true;
-  determineWinner();
+  // Small delay to show the hole card reveal
+  setTimeout(() => {
+    updateUI("Dealer's turn...");
+    
+    while (calculateHandValue(gameState.dealerHand) < 17) {
+      gameState.dealerHand.push(drawCard());
+      updateUI();
+    }
+    
+    gameState.gameOver = true;
+    determineWinner();
+  }, 1000);
 }
 
 function determineWinner() {

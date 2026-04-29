@@ -656,6 +656,12 @@ button:hover {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+.card-back {
+  background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+  color: #fff;
+  font-size: 1.5rem;
+}
+
 .hand-value {
   font-size: 1.3rem;
   font-weight: 700;
