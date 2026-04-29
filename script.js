@@ -1,5 +1,5 @@
 const STARTING_BALANCE = 0;
-const APP_VERSION = 8;
+const APP_VERSION = 9;
 const ADMIN_PASSWORD = "050211"; // Change this before sharing
 const symbolIcons = {
   diamond: "♦️",
@@ -346,7 +346,11 @@ function closeAdmin() {
 
 function isAdminPasswordValid() {
   if (!adminPasswordInput) return false;
-  const password = String(adminPasswordInput.value || "");
+  const password = String(adminPasswordInput.value || "").trim();
+  if (!password) {
+    resultTextEl.textContent = "Please enter the admin password.";
+    return false;
+  }
   if (password !== ADMIN_PASSWORD) {
     resultTextEl.textContent = "Incorrect admin password.";
     return false;
