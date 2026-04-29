@@ -18,6 +18,26 @@
       </div>
       <div class="topbar-end">
         <button id="admin-btn" class="ghost-btn">ADMIN</button>
+        <div class="admin-dropdown hidden" id="admin-dropdown">
+          <div class="admin-panel">
+            <h2>Admin Menu</h2>
+            <p>Everyone can open this menu. Enter the admin password to add or remove tokens.</p>
+            <label>
+              Token amount
+              <input id="admin-amount" type="number" min="1" value="50" />
+            </label>
+            <label>
+              Password
+              <input id="admin-password" type="password" autocomplete="current-password" />
+            </label>
+            <div class="admin-actions">
+              <button id="admin-save" class="primary-btn">Add Coins</button>
+              <button id="admin-withdraw" class="secondary-btn">Remove Coins</button>
+              <button id="admin-close" class="secondary-btn">Close</button>
+            </div>
+            <p class="modal-note">Password is required to change the balance.</p>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -74,27 +94,6 @@
         </div>
       </section>
     </main>
-  </div>
-
-  <div class="admin-dropdown hidden" id="admin-dropdown">
-    <div class="admin-panel">
-      <h2>Admin Menu</h2>
-      <p>Everyone can open this menu. Enter the admin password to add or remove tokens.</p>
-      <label>
-        Token amount
-        <input id="admin-amount" type="number" min="1" value="50" />
-      </label>
-      <label>
-        Password
-        <input id="admin-password" type="password" autocomplete="current-password" />
-      </label>
-      <div class="admin-actions">
-        <button id="admin-save" class="primary-btn">Add Coins</button>
-        <button id="admin-withdraw" class="secondary-btn">Remove Coins</button>
-        <button id="admin-close" class="secondary-btn">Close</button>
-      </div>
-      <p class="modal-note">Password is required to change the balance.</p>
-    </div>
   </div>
 
   <script src="script.js"></script>
