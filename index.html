@@ -21,10 +21,6 @@
     <main class="game-board">
       <section class="status-grid">
         <article class="status-card">
-          <span>Player</span>
-          <strong id="player-id">Guest</strong>
-        </article>
-        <article class="status-card">
           <span>Balance</span>
           <strong id="balance">0</strong>
         </article>
@@ -40,17 +36,6 @@
           <span>Last result</span>
           <strong id="result-text">Ready to spin</strong>
         </article>
-      </section>
-
-      <section class="player-panel">
-        <label class="player-label">
-          Player ID
-          <input id="user-id-input" type="text" placeholder="Enter player ID" />
-        </label>
-        <div class="player-actions">
-          <button id="load-user-btn" class="secondary-btn">Load Player</button>
-          <button id="new-user-btn" class="ghost-btn">New Player</button>
-        </div>
       </section>
 
       <section class="reel-area">
@@ -90,12 +75,8 @@
 
   <div class="modal hidden" id="admin-modal">
     <div class="modal-panel">
-      <h2>Token Top-Up</h2>
-      <p>Enter the password and amount to add coins to the current player.</p>
-      <label>
-        Password
-        <input id="admin-password" type="password" placeholder="Password" />
-      </label>
+      <h2>Admin Panel</h2>
+      <p>Enter the amount to add or remove tokens from the current balance.</p>
       <label>
         Token amount
         <input id="admin-amount" type="number" min="1" value="50" />

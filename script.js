@@ -24,8 +24,8 @@ const nonCherrySymbols = ["lemon", "orange", "plum", "bell", "diamond"];
 const STATE_STORAGE_KEY = "tokenCasinoState";
 let users = {};
 let currentUserId = "player1";
+let adminAuthenticated = false;
 
-const playerIdEl = document.getElementById("player-id");
 const balanceEl = document.getElementById("balance");
 const cashEl = document.getElementById("cash-value");
 const resultTextEl = document.getElementById("result-text");
@@ -46,11 +46,7 @@ const adminModal = document.getElementById("admin-modal");
 const overlay = document.getElementById("overlay");
 const adminSave = document.getElementById("admin-save");
 const adminCancel = document.getElementById("admin-cancel");
-const adminPassword = document.getElementById("admin-password");
 const adminAmount = document.getElementById("admin-amount");
-const userIdInput = document.getElementById("user-id-input");
-const loadUserBtn = document.getElementById("load-user-btn");
-const newUserBtn = document.getElementById("new-user-btn");
 
 const spinState = {
   isSpinning: false,
@@ -148,7 +144,6 @@ function formatCash(amount) {
 }
 
 function updateUI(message = "Ready to spin") {
-  playerIdEl.textContent = currentUserId || "Guest";
   balanceEl.textContent = getCurrentBalance().toString();
   if (cashEl) {
     cashEl.textContent = formatCash(getCurrentBalance());
@@ -315,9 +310,15 @@ function validateBet() {
 }
 
 function openAdmin() {
+  const password = prompt("Enter admin password:");
+  if (password === null) return;
+  if (password !== ADMIN_PASSWORD) {
+    resultTextEl.textContent = "Incorrect admin password.";
+    return;
+  }
+  adminAuthenticated = true;
   adminModal.classList.remove("hidden");
   overlay.classList.remove("hidden");
-  adminPassword.value = "";
   adminAmount.value = "50";
 }
 
@@ -327,8 +328,8 @@ function closeAdmin() {
 }
 
 function addAdminCoins() {
-  if (adminPassword.value !== ADMIN_PASSWORD) {
-    resultTextEl.textContent = "Incorrect owner password.";
+  if (!adminAuthenticated) {
+    resultTextEl.textContent = "Admin access required.";
     return;
   }
   const amount = Number(adminAmount.value || 0);
@@ -342,8 +343,8 @@ function addAdminCoins() {
 }
 
 function removeAdminCoins() {
-  if (adminPassword.value !== ADMIN_PASSWORD) {
-    resultTextEl.textContent = "Incorrect owner password.";
+  if (!adminAuthenticated) {
+    resultTextEl.textContent = "Admin access required.";
     return;
   }
   const amount = Number(adminAmount.value || 0);
@@ -376,12 +377,6 @@ maxBtn.addEventListener("click", () => {
   const balance = getCurrentBalance();
   betInput.value = balance > 0 ? balance : 0;
   validateBet();
-});
-loadUserBtn.addEventListener("click", () => {
-  setCurrentUser(userIdInput.value, false);
-});
-newUserBtn.addEventListener("click", () => {
-  setCurrentUser(userIdInput.value, true);
 });
 adminBtn.addEventListener("click", openAdmin);
 adminCancel.addEventListener("click", closeAdmin);
