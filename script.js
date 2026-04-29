@@ -150,7 +150,9 @@ function formatCash(amount) {
 function updateUI(message = "Ready to spin") {
   playerIdEl.textContent = currentUserId || "Guest";
   balanceEl.textContent = getCurrentBalance().toString();
-  cashEl.textContent = formatCash(getCurrentBalance());
+  if (cashEl) {
+    cashEl.textContent = formatCash(getCurrentBalance());
+  }
   betDisplay.textContent = betInput.value;
   resultTextEl.textContent = message;
   saveState();
@@ -313,9 +315,14 @@ function validateBet() {
 }
 
 function openAdmin() {
+  const password = prompt("Enter admin password:");
+  if (password !== ADMIN_PASSWORD) {
+    resultTextEl.textContent = "Incorrect admin password.";
+    return;
+  }
   adminModal.classList.remove("hidden");
   overlay.classList.remove("hidden");
-  adminPassword.value = "";
+  adminPassword.value = password;
   adminAmount.value = "50";
 }
 
