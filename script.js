@@ -23,8 +23,15 @@ const spinThresholds = [
 const nonCherrySymbols = ["lemon", "orange", "plum", "bell", "diamond"];
 const STATE_STORAGE_KEY = "tokenCasinoState";
 let users = {};
-let currentUserId = "player1";
+let currentUserId = null;
 
+const authScreen = document.getElementById("auth-screen");
+const gameScreen = document.getElementById("game-screen");
+const authUsernameInput = document.getElementById("auth-username");
+const authPasswordInput = document.getElementById("auth-password");
+const loginBtn = document.getElementById("login-btn");
+const createAccountBtn = document.getElementById("create-account-btn");
+const authMessageEl = document.getElementById("auth-message");
 const playerIdEl = document.getElementById("player-id");
 const balanceEl = document.getElementById("balance");
 const resultTextEl = document.getElementById("result-text");
@@ -37,6 +44,7 @@ const betInput = document.getElementById("bet-input");
 const betDisplay = document.getElementById("bet-display");
 const spinBtn = document.getElementById("spin-btn");
 const maxBtn = document.getElementById("max-btn");
+const stopBtn = document.getElementById("stop-btn");
 const betDownBtn = document.getElementById("bet-down");
 const betUpBtn = document.getElementById("bet-up");
 const adminBtn = document.getElementById("admin-btn");
@@ -50,17 +58,26 @@ const userIdInput = document.getElementById("user-id-input");
 const loadUserBtn = document.getElementById("load-user-btn");
 const newUserBtn = document.getElementById("new-user-btn");
 
+const spinState = {
+  isSpinning: false,
+  currentReel: 0,
+  intervals: [],
+  finalReels: [],
+  outcome: null,
+  bet: 0
+};
+
 function loadState() {
   const stored = localStorage.getItem(STATE_STORAGE_KEY);
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
       if (parsed && typeof parsed === "object") {
-        if (typeof parsed.currentUserId === "string") {
-          currentUserId = parsed.currentUserId;
-        }
         if (parsed.users && typeof parsed.users === "object") {
           users = parsed.users;
+        }
+        if (typeof parsed.currentUserId === "string") {
+          currentUserId = parsed.currentUserId;
         }
       }
     } catch (err) {
@@ -68,15 +85,16 @@ function loadState() {
     }
   }
 
-  if (!users[currentUserId]) {
-    const firstId = Object.keys(users)[0];
-    if (firstId) {
-      currentUserId = firstId;
-    } else {
-      currentUserId = "player1";
-      users[currentUserId] = { balance: STARTING_BALANCE };
+  Object.keys(users).forEach((id) => {
+    const user = users[id];
+    if (typeof user !== "object") return;
+    if (!("balance" in user)) {
+      user.balance = STARTING_BALANCE;
     }
-  }
+    if (!("password" in user)) {
+      user.password = "";
+    }
+  });
 }
 
 function saveState() {
@@ -84,18 +102,77 @@ function saveState() {
 }
 
 function getCurrentUser() {
+  if (!currentUserId) return null;
   if (!users[currentUserId]) {
-    users[currentUserId] = { balance: STARTING_BALANCE };
+    users[currentUserId] = { balance: STARTING_BALANCE, password: "" };
   }
   return users[currentUserId];
 }
 
 function getCurrentBalance() {
-  return getCurrentUser().balance;
+  return getCurrentUser()?.balance || 0;
 }
 
 function setCurrentBalance(amount) {
-  getCurrentUser().balance = Math.max(0, Math.round(amount));
+  const user = getCurrentUser();
+  if (!user) return;
+  user.balance = Math.max(0, Math.round(amount));
+}
+
+function showAuth(message = "") {
+  authScreen.classList.remove("hidden");
+  gameScreen.classList.add("hidden");
+  if (message) {
+    authMessageEl.textContent = message;
+  } else {
+    authMessageEl.textContent = "";
+  }
+}
+
+function showGame() {
+  authScreen.classList.add("hidden");
+  gameScreen.classList.remove("hidden");
+  authMessageEl.textContent = "";
+  validateBet();
+  updateUI(`Welcome ${currentUserId}!`);
+}
+
+function loginUser() {
+  const username = String(authUsernameInput.value || "").trim();
+  const password = String(authPasswordInput.value || "");
+  if (!username || !password) {
+    authMessageEl.textContent = "Enter both username and password.";
+    return;
+  }
+  const user = users[username];
+  if (!user) {
+    authMessageEl.textContent = "Account not found. Create a new account below.";
+    return;
+  }
+  if (user.password !== password) {
+    authMessageEl.textContent = "Invalid password.";
+    return;
+  }
+  currentUserId = username;
+  saveState();
+  showGame();
+}
+
+function createNewAccount() {
+  const username = String(authUsernameInput.value || "").trim();
+  const password = String(authPasswordInput.value || "");
+  if (!username || !password) {
+    authMessageEl.textContent = "Enter both username and password to create an account.";
+    return;
+  }
+  if (users[username]) {
+    authMessageEl.textContent = "This username is already in use.";
+    return;
+  }
+  users[username] = { balance: STARTING_BALANCE, password };
+  currentUserId = username;
+  saveState();
+  showGame();
 }
 
 function setCurrentUser(userId, createIfMissing = false) {
@@ -122,11 +199,13 @@ function setCurrentUser(userId, createIfMissing = false) {
 }
 
 function updateUI(message = "Ready to spin") {
-  playerIdEl.textContent = currentUserId;
+  playerIdEl.textContent = currentUserId || "Guest";
   balanceEl.textContent = getCurrentBalance().toString();
   betDisplay.textContent = betInput.value;
   resultTextEl.textContent = message;
   saveState();
+  spinBtn.disabled = getCurrentBalance() < 1 || spinState.isSpinning;
+  maxBtn.disabled = getCurrentBalance() < 1 || spinState.isSpinning;
 }
 
 function randomInt(min, max) {
@@ -193,6 +272,12 @@ function determineMessage(type, winAmount, bet) {
   return `Returned ${winAmount} coins.`;
 }
 
+function getAdjustedRoll(bet) {
+  const penaltyFactor = bet >= 100 ? 1 : 1 + (100 - bet) * 0.01;
+  const maxRoll = Math.floor(100000 * penaltyFactor);
+  return randomInt(1, maxRoll);
+}
+
 function spin() {
   const bet = Number(betInput.value || 0);
   if (!bet || bet < 1) {
@@ -206,43 +291,73 @@ function spin() {
   }
 
   setCurrentBalance(currentBalance - bet);
-  updateUI("Spinning...");
+  updateUI("Reels are spinning... Click STOP to lock each reel.");
+  spinState.isSpinning = true;
+  spinState.currentReel = 0;
+  spinState.bet = bet;
+  spinState.outcome = getOutcome(getAdjustedRoll(bet));
+  spinState.finalReels = buildReelSymbols(spinState.outcome.type);
+
   spinBtn.disabled = true;
   maxBtn.disabled = true;
   betDownBtn.disabled = true;
   betUpBtn.disabled = true;
+  stopBtn.classList.remove("hidden");
+  stopBtn.disabled = false;
 
   reelEls.forEach((el) => {
     el.textContent = "0";
-    el.classList.add("spin");
   });
 
-  setTimeout(() => {
-    const roll = randomInt(1, 100000);
-    const outcome = getOutcome(roll);
-    const reels = buildReelSymbols(outcome.type);
+  spinState.intervals = reelEls.map((el) =>
+    setInterval(() => {
+      el.textContent = symbolIcons[chooseRandom(Object.keys(symbolIcons))];
+    }, 20)
+  );
+}
 
-    reelEls.forEach((el, index) => {
-      el.textContent = symbolIcons[reels[index]];
-      el.classList.remove("spin");
-    });
+function stopReel() {
+  if (!spinState.isSpinning) return;
+  const index = spinState.currentReel;
+  if (index >= reelEls.length) return;
 
-    const prize = Math.round(bet * outcome.multiplier);
-    setCurrentBalance(getCurrentBalance() + prize);
-    const message = determineMessage(outcome.type, prize, bet);
-    updateUI(`${message} ${formatSymbols(reels)}`);
-    spinBtn.disabled = false;
-    maxBtn.disabled = false;
-    betDownBtn.disabled = false;
-    betUpBtn.disabled = false;
-  }, 1400);
+  clearInterval(spinState.intervals[index]);
+  reelEls[index].textContent = symbolIcons[spinState.finalReels[index]];
+  spinState.currentReel += 1;
+
+  if (spinState.currentReel >= reelEls.length) {
+    finalizeSpin();
+    return;
+  }
+
+  resultTextEl.textContent = `Reel ${index + 1} locked. Click STOP to lock reel ${spinState.currentReel + 1}.`;
+}
+
+function finalizeSpin() {
+  spinState.isSpinning = false;
+  stopBtn.classList.add("hidden");
+
+  const prize = Math.round(spinState.bet * spinState.outcome.multiplier);
+  setCurrentBalance(getCurrentBalance() + prize);
+  const message = determineMessage(spinState.outcome.type, prize, spinState.bet);
+  updateUI(`${message} ${formatSymbols(spinState.finalReels)}`);
+
+  spinBtn.disabled = getCurrentBalance() < 1;
+  maxBtn.disabled = getCurrentBalance() < 1;
+  betDownBtn.disabled = false;
+  betUpBtn.disabled = false;
+  spinState.intervals = [];
 }
 
 function validateBet() {
   let bet = Number(betInput.value || 0);
   const currentBalance = getCurrentBalance();
-  if (bet < 1) bet = 1;
-  if (bet > currentBalance) bet = currentBalance;
+  if (currentBalance === 0) {
+    bet = 0;
+  } else {
+    if (bet < 1) bet = 1;
+    if (bet > currentBalance) bet = currentBalance;
+  }
   betInput.value = bet;
   betDisplay.textContent = bet.toString();
 }
@@ -276,7 +391,12 @@ function addAdminCoins() {
 
 betInput.addEventListener("input", validateBet);
 betDownBtn.addEventListener("click", () => {
-  betInput.value = Math.max(1, Number(betInput.value || 1) - 1);
+  const currentBalance = getCurrentBalance();
+  if (currentBalance === 0) {
+    betInput.value = 0;
+  } else {
+    betInput.value = Math.max(1, Number(betInput.value || 1) - 1);
+  }
   validateBet();
 });
 betUpBtn.addEventListener("click", () => {
@@ -284,9 +404,10 @@ betUpBtn.addEventListener("click", () => {
   validateBet();
 });
 spinBtn.addEventListener("click", spin);
+stopBtn.addEventListener("click", stopReel);
 maxBtn.addEventListener("click", () => {
   const balance = getCurrentBalance();
-  betInput.value = balance > 0 ? balance : 1;
+  betInput.value = balance > 0 ? balance : 0;
   validateBet();
 });
 loadUserBtn.addEventListener("click", () => {
@@ -295,11 +416,19 @@ loadUserBtn.addEventListener("click", () => {
 newUserBtn.addEventListener("click", () => {
   setCurrentUser(userIdInput.value, true);
 });
+authUsernameInput.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") loginUser();
+});
+authPasswordInput.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") loginUser();
+});
+loginBtn.addEventListener("click", loginUser);
+createAccountBtn.addEventListener("click", createNewAccount);
 adminBtn.addEventListener("click", openAdmin);
 adminCancel.addEventListener("click", closeAdmin);
 adminSave.addEventListener("click", addAdminCoins);
 overlay.addEventListener("click", closeAdmin);
 
 loadState();
+showAuth();
 validateBet();
-updateUI();

@@ -7,7 +7,27 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell">
+  <main class="auth-screen" id="auth-screen">
+    <div class="auth-panel">
+      <h1>Token Casino</h1>
+      <p>Sign in with your username and password to continue.</p>
+      <label>
+        Username
+        <input id="auth-username" type="text" placeholder="Username" />
+      </label>
+      <label>
+        Password
+        <input id="auth-password" type="password" placeholder="Password" />
+      </label>
+      <div class="auth-actions">
+        <button id="login-btn" class="primary-btn">Sign In</button>
+      </div>
+      <p id="auth-message" class="auth-message"></p>
+    </div>
+    <button id="create-account-btn" class="ghost-btn auth-create-btn">Create a new account</button>
+  </main>
+
+  <div class="app-shell hidden" id="game-screen">
     <header class="topbar">
       <div>
         <p class="eyebrow">Private Game</p>
@@ -30,7 +50,7 @@
         </article>
         <article class="status-card">
           <span>Current bet</span>
-          <strong id="bet-display">1</strong>
+          <strong id="bet-display">0</strong>
         </article>
         <article class="status-card">
           <span>Last result</span>
@@ -58,12 +78,13 @@
       <section class="controls">
         <div class="bet-controls">
           <button id="bet-down" class="control-btn">-</button>
-          <input id="bet-input" type="number" min="1" value="1" />
+          <input id="bet-input" type="number" min="0" value="0" />
           <button id="bet-up" class="control-btn">+</button>
         </div>
         <div class="action-buttons">
           <button id="max-btn" class="secondary-btn">Max Bet</button>
           <button id="spin-btn" class="primary-btn">Spin</button>
+          <button id="stop-btn" class="secondary-btn hidden">Stop</button>
         </div>
       </section>
 
