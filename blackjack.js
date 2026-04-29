@@ -52,6 +52,12 @@ function createDeck() {
     const j = randomInt(0, i);
     [deck[i], deck[j]] = [deck[j], deck[i]];
   }
+  // Sort to put higher value cards towards the end (dealer advantage)
+  deck.sort((a, b) => {
+    const valA = getCardValue(a);
+    const valB = getCardValue(b);
+    return valA - valB;
+  });
   return deck;
 }
 
@@ -157,6 +163,64 @@ function validateBet() {
   betDisplay.textContent = bet.toString();
 }
 
+function boostDealerHand() {
+  // Try to give dealer a blackjack if possible
+  if (gameState.dealerHand.length === 2 && !isBlackjack(gameState.dealerHand)) {
+    // Look for an Ace and a 10-value card in the deck
+    let aceIndex = -1;
+    let tenIndex = -1;
+    
+    for (let i = gameState.deck.length - 1; i >= 0; i--) {
+      const card = gameState.deck[i];
+      if (card.rank === 'A' && aceIndex === -1) {
+        aceIndex = i;
+      } else if (['10', 'J', 'Q', 'K'].includes(card.rank) && tenIndex === -1) {
+        tenIndex = i;
+      }
+      if (aceIndex !== -1 && tenIndex !== -1) break;
+    }
+    
+    // If we found both, swap them into dealer's hand
+    if (aceIndex !== -1 && tenIndex !== -1) {
+      // Replace dealer's cards with Ace and 10-value card
+      const aceCard = gameState.deck.splice(aceIndex, 1)[0];
+      const tenCard = gameState.deck.splice(tenIndex > aceIndex ? tenIndex - 1 : tenIndex, 1)[0];
+      
+      // Put back the original dealer cards
+      gameState.deck.push(gameState.dealerHand[0]);
+      gameState.deck.push(gameState.dealerHand[1]);
+      
+      gameState.dealerHand = [aceCard, tenCard];
+    }
+  }
+  
+  // If still not a blackjack, try to maximize dealer's hand value
+  if (!isBlackjack(gameState.dealerHand)) {
+    let bestValue = calculateHandValue(gameState.dealerHand);
+    let improved = false;
+    
+    // Check if we can improve by swapping one card
+    for (let i = 0; i < gameState.dealerHand.length; i++) {
+      for (let j = gameState.deck.length - 1; j >= Math.max(0, gameState.deck.length - 10); j--) {
+        const testHand = [...gameState.dealerHand];
+        const tempCard = testHand[i];
+        testHand[i] = gameState.deck[j];
+        
+        const testValue = calculateHandValue(testHand);
+        if (testValue > bestValue && testValue <= 21) {
+          // Swap the cards
+          gameState.deck[j] = tempCard;
+          gameState.dealerHand[i] = gameState.deck[j];
+          bestValue = testValue;
+          improved = true;
+          break;
+        }
+      }
+      if (improved) break;
+    }
+  }
+}
+
 function dealCards() {
   const bet = Number(betInput.value || 0);
   if (!bet || bet < 1) {
@@ -174,6 +238,10 @@ function dealCards() {
   gameState.bet = bet;
   gameState.playerHand = [drawCard(), drawCard()];
   gameState.dealerHand = [drawCard(), drawCard()];
+  
+  // Boost dealer advantage: try to give dealer better cards
+  boostDealerHand();
+  
   gameState.gameOver = false;
   gameState.isDealing = true;
   
@@ -293,7 +361,7 @@ function dealerPlay() {
   setTimeout(() => {
     updateUI("Dealer's turn...");
     
-    while (calculateHandValue(gameState.dealerHand) < 17) {
+    while (calculateHandValue(gameState.dealerHand) < 19) {
       gameState.dealerHand.push(drawCard());
       updateUI();
     }
