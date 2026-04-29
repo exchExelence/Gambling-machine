@@ -386,9 +386,10 @@ maxBtn.addEventListener("click", () => {
   validateBet();
 });
 adminBtn.addEventListener("click", openAdmin);
-adminClose.addEventListener("click", closeAdmin);
-adminSave.addEventListener("click", addAdminCoins);
-document.getElementById("admin-withdraw").addEventListener("click", removeAdminCoins);
+adminClose?.addEventListener("click", closeAdmin);
+adminSave?.addEventListener("click", addAdminCoins);
+const adminWithdraw = document.getElementById("admin-withdraw");
+adminWithdraw?.addEventListener("click", removeAdminCoins);
 
 document.addEventListener("click", (event) => {
   if (!adminMenu || adminMenu.classList.contains("hidden")) return;

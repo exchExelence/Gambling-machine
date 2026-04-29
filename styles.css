@@ -470,7 +470,13 @@ button:hover {
   top: calc(100% + 12px);
   right: 24px;
   width: min(380px, calc(100% - 32px));
-  z-index: 9999;
+  z-index: 99999;
+  pointer-events: auto;
+}
+
+.admin-panel {
+  position: relative;
+  pointer-events: auto;
 }
 
 .admin-panel {
