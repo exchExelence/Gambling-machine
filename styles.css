@@ -520,9 +520,177 @@ button:hover {
   margin-top: 6px;
 }
 
+/* Homepage specific styles */
+.homepage-games {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.game-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(7, 16, 24, 0.8);
+  border-radius: 26px;
+  padding: 32px 24px;
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.game-card:nth-child(1) { animation-delay: 0.55s; }
+.game-card:nth-child(2) { animation-delay: 0.65s; }
+
+.game-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(112, 214, 255, 0.15);
+}
+
+.game-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.game-card h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.game-icons {
+  font-size: 2.8rem;
+  min-width: 60px;
+  text-align: right;
+}
+
+.game-description {
+  margin: 0;
+  color: #b9d4ef;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.game-features {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feature {
+  color: #86efac;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.game-link {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 12px 28px;
+  border-radius: 18px;
+  font-weight: 700;
+}
+
+.game-card-slots {
+  border-top: 3px solid rgba(220, 38, 38, 0.3);
+}
+
+.game-card-blackjack {
+  border-top: 3px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Blackjack specific styles */
+.blackjack-table {
+  display: grid;
+  gap: 40px;
+  min-height: 500px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(59, 130, 246, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 26px;
+  padding: 40px;
+  backdrop-filter: blur(16px);
+}
+
+.dealer-area,
+.player-area {
+  display: grid;
+  gap: 16px;
+}
+
+.dealer-label,
+.player-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #dbeafe;
+}
+
+.cards-container {
+  display: grid;
+  gap: 12px;
+}
+
+.hand {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.card {
+  min-width: 70px;
+  height: 100px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.hand-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #86efac;
+  letter-spacing: 0.05em;
+}
+
+.game-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.rules-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px 20px;
+}
+
+.rules-grid div {
+  padding: 10px 0;
+  color: #dbeafe;
+  font-size: 0.95rem;
+}
+
+.rules-grid div:nth-child(odd) {
+  color: #b9d4ef;
+}
+
 @media (max-width: 720px) {
   .reel-area {
     grid-template-columns: 1fr;
+  }
+  .blackjack-table {
+    padding: 24px;
+    gap: 30px;
   }
   .topbar {
     flex-direction: column;
@@ -530,5 +698,10 @@ button:hover {
   }
   .topbar-end {
     justify-content: flex-start;
+  }
+  .card {
+    min-width: 60px;
+    height: 90px;
+    font-size: 1rem;
   }
 }

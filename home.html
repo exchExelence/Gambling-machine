@@ -17,8 +17,6 @@
         </div>
       </div>
       <div class="topbar-end">
-        <a href="home.html" class="ghost-btn">← Home</a>
-        <a href="blackjack.html" class="ghost-btn">Blackjack →</a>
         <button id="admin-btn" class="ghost-btn">ADMIN</button>
         <div class="admin-dropdown hidden" id="admin-dropdown">
           <div class="admin-panel">
@@ -53,52 +51,41 @@
           <span>Cash</span>
           <strong id="cash-value">$0.00</strong>
         </article>
-        <article class="status-card">
-          <span>Current bet</span>
-          <strong id="bet-display">0</strong>
-        </article>
-        <article class="status-card">
-          <span>Last result</span>
-          <strong id="result-text">Ready to spin</strong>
-        </article>
       </section>
 
-      <section class="reel-area">
-        <div class="reel" id="reel-0">0</div>
-        <div class="reel" id="reel-1">0</div>
-        <div class="reel" id="reel-2">0</div>
-      </section>
-
-      <section class="controls">
-        <div class="bet-controls">
-          <button id="bet-down" class="control-btn">-</button>
-          <input id="bet-input" type="number" min="0" value="0" />
-          <button id="bet-up" class="control-btn">+</button>
+      <section class="homepage-games">
+        <div class="game-card game-card-slots">
+          <div class="game-card-header">
+            <h2>Slot Machine</h2>
+            <div class="game-icons">🎰</div>
+          </div>
+          <p class="game-description">Try your luck with our classic slot machine. Match symbols to win big!</p>
+          <div class="game-features">
+            <div class="feature">• Multiple pay lines</div>
+            <div class="feature">• Up to 50x multiplier</div>
+            <div class="feature">• Near miss excitement</div>
+          </div>
+          <a href="index.html" class="primary-btn game-link">Play Slots</a>
         </div>
-        <div class="action-buttons">
-          <button id="max-btn" class="secondary-btn">Max Bet</button>
-          <button id="spin-btn" class="primary-btn">Spin</button>
-          <button id="stop-btn" class="secondary-btn hidden">Stop</button>
-        </div>
-      </section>
 
-      <section class="paytable-card">
-        <h2>Pay Table</h2>
-        <div class="paytable-grid">
-          <div>3 Diamond</div><div>×50</div>
-          <div>3 Bell</div><div>×20</div>
-          <div>3 Plum</div><div>×10</div>
-          <div>3 Orange</div><div>×6</div>
-          <div>3 Lemon</div><div>×4</div>
-          <div>3 Cherry</div><div>×3</div>
-          <div>2 Cherry</div><div>×1.5</div>
-          <div>1 Cherry</div><div>×0.5</div>
+        <div class="game-card game-card-blackjack">
+          <div class="game-card-header">
+            <h2>Blackjack</h2>
+            <div class="game-icons">🃏</div>
+          </div>
+          <p class="game-description">Beat the dealer in the classic card game. Hit 21 with strategy and skill!</p>
+          <div class="game-features">
+            <div class="feature">• Real card deck</div>
+            <div class="feature">• 3:2 blackjack payout</div>
+            <div class="feature">• Double Down & Split</div>
+          </div>
+          <a href="blackjack.html" class="primary-btn game-link">Play Blackjack</a>
         </div>
       </section>
     </main>
   </div>
 
   <script src="shared.js"></script>
-  <script src="script.js"></script>
+  <script src="home.js"></script>
 </body>
 </html>

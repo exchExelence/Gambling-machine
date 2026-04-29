@@ -1,6 +1,4 @@
-const STARTING_BALANCE = 0;
-const APP_VERSION = 9;
-const ADMIN_PASSWORD = "050211"; // Change this before sharing
+const APP_VERSION = 15;
 const symbolIcons = {
   diamond: "♦️",
   bell: "🔔",
@@ -11,20 +9,22 @@ const symbolIcons = {
 };
 
 const spinThresholds = [
-  {limit: 50, type: "3diamond", multiplier: 50},
-  {limit: 400, type: "3bell", multiplier: 20},
-  {limit: 1300, type: "3plum", multiplier: 10},
-  {limit: 3900, type: "3orange", multiplier: 6},
-  {limit: 8000, type: "3lemon", multiplier: 4},
-  {limit: 14100, type: "3cherry", multiplier: 3},
-  {limit: 25100, type: "2cherry", multiplier: 1.5},
-  {limit: 40900, type: "1cherry", multiplier: 0.5}
+  {limit: 40, type: "3diamond", multiplier: 50},
+  {limit: 220, type: "2diamond", multiplier: 0},
+  {limit: 320, type: "3bell", multiplier: 20},
+  {limit: 900, type: "2bell", multiplier: 0},
+  {limit: 1040, type: "3plum", multiplier: 10},
+  {limit: 2080, type: "2plum", multiplier: 0},
+  {limit: 3120, type: "3orange", multiplier: 6},
+  {limit: 5200, type: "2orange", multiplier: 0},
+  {limit: 6400, type: "3lemon", multiplier: 4},
+  {limit: 8800, type: "2lemon", multiplier: 0},
+  {limit: 11280, type: "3cherry", multiplier: 3},
+  {limit: 20080, type: "2cherry", multiplier: 1.5},
+  {limit: 32720, type: "1cherry", multiplier: 0.5}
 ];
 
 const nonCherrySymbols = ["lemon", "orange", "plum", "bell", "diamond"];
-const STATE_STORAGE_KEY = "tokenCasinoState";
-let users = {};
-let currentUserId = "player1";
 
 const balanceEl = document.getElementById("balance");
 const cashEl = document.getElementById("cash-value");
@@ -58,64 +58,7 @@ const spinState = {
   bet: 0
 };
 
-function loadState() {
-  const stored = localStorage.getItem(STATE_STORAGE_KEY);
-  if (stored) {
-    try {
-      const parsed = JSON.parse(stored);
-      if (parsed && typeof parsed === "object") {
-        if (parsed.users && typeof parsed.users === "object") {
-          users = parsed.users;
-        }
-        if (typeof parsed.currentUserId === "string") {
-          currentUserId = parsed.currentUserId;
-        }
-      }
-    } catch (err) {
-      console.warn("Unable to parse saved state", err);
-    }
-  }
-
-  Object.keys(users).forEach((id) => {
-    const user = users[id];
-    if (typeof user !== "object") return;
-    if (!("balance" in user)) {
-      user.balance = STARTING_BALANCE;
-    }
-  });
-
-  if (!currentUserId || !users[currentUserId]) {
-    const firstUser = Object.keys(users)[0];
-    if (firstUser) {
-      currentUserId = firstUser;
-    } else {
-      currentUserId = "player1";
-      users[currentUserId] = { balance: STARTING_BALANCE };
-    }
-  }
-}
-
-function saveState() {
-  localStorage.setItem(STATE_STORAGE_KEY, JSON.stringify({ currentUserId, users }));
-}
-
-function getCurrentUser() {
-  if (!currentUserId) return null;
-  if (!users[currentUserId]) {
-    users[currentUserId] = { balance: STARTING_BALANCE, password: "" };
-  }
-  return users[currentUserId];
-}
-
-function getCurrentBalance() {
-  return getCurrentUser()?.balance || 0;
-}
-
-function setCurrentBalance(amount) {
-  const user = getCurrentUser();
-  if (!user) return;
-  user.balance = Math.max(0, Math.round(amount));
-}
+loadState();
 
 function setCurrentUser(userId, createIfMissing = false) {
   const id = String(userId || "").trim();
@@ -140,10 +83,6 @@ function setCurrentUser(userId, createIfMissing = false) {
   return true;
 }
 
-function formatCash(amount) {
-  return `$${(amount / 100).toFixed(2)}`;
-}
-
 function updateUI(message = "Ready to spin") {
   balanceEl.textContent = getCurrentBalance().toString();
   if (cashEl) {
@@ -159,26 +98,48 @@ function updateUI(message = "Ready to spin") {
   maxBtn.disabled = getCurrentBalance() < 1 || spinState.isSpinning;
 }
 
-function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function chooseRandom(array) {
-  return array[randomInt(0, array.length - 1)];
-}
-
 function buildReelSymbols(outcome) {
   switch (outcome) {
     case "3diamond":
       return ["diamond", "diamond", "diamond"];
+    case "2diamond": {
+      const nonDiamond = chooseRandom(nonCherrySymbols.filter(s => s !== "diamond"));
+      const positions = [0, 1, 2].sort(() => Math.random() - 0.5);
+      const result = ["diamond", "diamond", nonDiamond];
+      return [result[positions[0]], result[positions[1]], result[positions[2]]];
+    }
     case "3bell":
       return ["bell", "bell", "bell"];
+    case "2bell": {
+      const nonBell = chooseRandom(nonCherrySymbols.filter(s => s !== "bell"));
+      const positions = [0, 1, 2].sort(() => Math.random() - 0.5);
+      const result = ["bell", "bell", nonBell];
+      return [result[positions[0]], result[positions[1]], result[positions[2]]];
+    }
     case "3plum":
       return ["plum", "plum", "plum"];
+    case "2plum": {
+      const nonPlum = chooseRandom(nonCherrySymbols.filter(s => s !== "plum"));
+      const positions = [0, 1, 2].sort(() => Math.random() - 0.5);
+      const result = ["plum", "plum", nonPlum];
+      return [result[positions[0]], result[positions[1]], result[positions[2]]];
+    }
     case "3orange":
       return ["orange", "orange", "orange"];
+    case "2orange": {
+      const nonOrange = chooseRandom(nonCherrySymbols.filter(s => s !== "orange"));
+      const positions = [0, 1, 2].sort(() => Math.random() - 0.5);
+      const result = ["orange", "orange", nonOrange];
+      return [result[positions[0]], result[positions[1]], result[positions[2]]];
+    }
     case "3lemon":
       return ["lemon", "lemon", "lemon"];
+    case "2lemon": {
+      const nonLemon = chooseRandom(nonCherrySymbols.filter(s => s !== "lemon"));
+      const positions = [0, 1, 2].sort(() => Math.random() - 0.5);
+      const result = ["lemon", "lemon", nonLemon];
+      return [result[positions[0]], result[positions[1]], result[positions[2]]];
+    }
     case "3cherry":
       return ["cherry", "cherry", "cherry"];
     case "2cherry": {
@@ -211,6 +172,9 @@ function formatSymbols(symbols) {
 }
 
 function determineMessage(type, winAmount, bet) {
+  if (type.startsWith("2") && type !== "2cherry") {
+    return `So close! Nearly had it. Lost ${bet} coins.`;
+  }
   if (type === "lose") {
     return `Lost ${bet} coins. Try again.`;
   }
