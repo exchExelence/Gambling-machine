@@ -33,11 +33,25 @@ button {
   max-width: 960px;
   margin: 0 auto;
   padding: 24px;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeInUp 0.8s ease forwards 0.05s;
 }
 
 .topbar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  backdrop-filter: blur(18px);
+  background: rgba(5, 13, 19, 0.72);
+  margin-bottom: 30px;
+  opacity: 0;
+  transform: translateY(-12px);
+  animation: fadeInUp 0.8s ease forwards 0.15s;
   align-items: center;
   gap: 16px;
   padding: 20px 24px;
@@ -103,6 +117,66 @@ button {
 
 button:hover {
   transform: translateY(-1px);
+}
+
+.status-card,
+.player-panel,
+.reel-area,
+.controls,
+.paytable-card {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.status-card:nth-child(1) { animation-delay: 0.25s; }
+.status-card:nth-child(2) { animation-delay: 0.3s; }
+.status-card:nth-child(3) { animation-delay: 0.35s; }
+.status-card:nth-child(4) { animation-delay: 0.4s; }
+.player-panel { animation-delay: 0.45s; }
+.reel-area { animation-delay: 0.55s; }
+.controls { animation-delay: 0.7s; }
+.paytable-card { animation-delay: 0.8s; }
+
+.reel {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeInUp 0.7s ease forwards;
+}
+
+.reel-area .reel:nth-child(1) { animation-delay: 0.58s; }
+.reel-area .reel:nth-child(2) { animation-delay: 0.62s; }
+.reel-area .reel:nth-child(3) { animation-delay: 0.66s; }
+
+.reel.spin {
+  animation: reelSpin 1.2s ease-in-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reelSpin {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(-18px) rotate(-2deg);
+  }
+  80% {
+    transform: translateY(8px) rotate(2deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
 }
 
 .game-board {

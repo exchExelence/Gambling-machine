@@ -1,4 +1,4 @@
-const STARTING_BALANCE = 150;
+const STARTING_BALANCE = 0;
 const ADMIN_PASSWORD = "050211"; // Change this before sharing
 const symbolIcons = {
   diamond: "♦️",
@@ -206,17 +206,36 @@ function spin() {
   }
 
   setCurrentBalance(currentBalance - bet);
-  const roll = randomInt(1, 100000);
-  const outcome = getOutcome(roll);
-  const reels = buildReelSymbols(outcome.type);
-  reelEls.forEach((el, index) => {
-    el.textContent = symbolIcons[reels[index]];
+  updateUI("Spinning...");
+  spinBtn.disabled = true;
+  maxBtn.disabled = true;
+  betDownBtn.disabled = true;
+  betUpBtn.disabled = true;
+
+  reelEls.forEach((el) => {
+    el.textContent = "0";
+    el.classList.add("spin");
   });
 
-  const prize = Math.round(bet * outcome.multiplier);
-  setCurrentBalance(getCurrentBalance() + prize);
-  const message = determineMessage(outcome.type, prize, bet);
-  updateUI(`${message} ${formatSymbols(reels)}`);
+  setTimeout(() => {
+    const roll = randomInt(1, 100000);
+    const outcome = getOutcome(roll);
+    const reels = buildReelSymbols(outcome.type);
+
+    reelEls.forEach((el, index) => {
+      el.textContent = symbolIcons[reels[index]];
+      el.classList.remove("spin");
+    });
+
+    const prize = Math.round(bet * outcome.multiplier);
+    setCurrentBalance(getCurrentBalance() + prize);
+    const message = determineMessage(outcome.type, prize, bet);
+    updateUI(`${message} ${formatSymbols(reels)}`);
+    spinBtn.disabled = false;
+    maxBtn.disabled = false;
+    betDownBtn.disabled = false;
+    betUpBtn.disabled = false;
+  }, 1400);
 }
 
 function validateBet() {

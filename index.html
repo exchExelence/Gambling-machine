@@ -14,7 +14,6 @@
         <h1>Token Casino</h1>
       </div>
       <div class="topbar-end">
-        <span class="chip">House edge: 7%</span>
         <button id="admin-btn" class="ghost-btn">ADMIN</button>
       </div>
     </header>
@@ -27,11 +26,11 @@
         </article>
         <article class="status-card">
           <span>Balance</span>
-          <strong id="balance">150</strong>
+          <strong id="balance">0</strong>
         </article>
         <article class="status-card">
           <span>Current bet</span>
-          <strong id="bet-display">10</strong>
+          <strong id="bet-display">1</strong>
         </article>
         <article class="status-card">
           <span>Last result</span>
@@ -51,15 +50,15 @@
       </section>
 
       <section class="reel-area">
-        <div class="reel" id="reel-0">?</div>
-        <div class="reel" id="reel-1">?</div>
-        <div class="reel" id="reel-2">?</div>
+        <div class="reel" id="reel-0">0</div>
+        <div class="reel" id="reel-1">0</div>
+        <div class="reel" id="reel-2">0</div>
       </section>
 
       <section class="controls">
         <div class="bet-controls">
           <button id="bet-down" class="control-btn">-</button>
-          <input id="bet-input" type="number" min="1" value="10" />
+          <input id="bet-input" type="number" min="1" value="1" />
           <button id="bet-up" class="control-btn">+</button>
         </div>
         <div class="action-buttons">
@@ -86,11 +85,11 @@
 
   <div class="modal hidden" id="admin-modal">
     <div class="modal-panel">
-      <h2>Owner Top-Up</h2>
-      <p>Enter the password and number of coins to add to the current player.</p>
+      <h2>Token Top-Up</h2>
+      <p>Enter the password and amount to add coins to the current player.</p>
       <label>
         Password
-        <input id="admin-password" type="password" placeholder="Owner password" />
+        <input id="admin-password" type="password" placeholder="Password" />
       </label>
       <label>
         Add tokens
@@ -100,7 +99,7 @@
         <button id="admin-save" class="primary-btn">Add Coins</button>
         <button id="admin-cancel" class="secondary-btn">Cancel</button>
       </div>
-      <p class="modal-note">Only the game owner can use this panel.</p>
+      <p class="modal-note">Password required to add tokens.</p>
     </div>
   </div>
   <div class="overlay hidden" id="overlay"></div>
