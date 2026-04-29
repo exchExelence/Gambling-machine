@@ -7,27 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="auth-screen" id="auth-screen">
-    <div class="auth-panel">
-      <h1>Token Casino</h1>
-      <p>Sign in with your username and password to continue.</p>
-      <label>
-        Username
-        <input id="auth-username" type="text" placeholder="Username" />
-      </label>
-      <label>
-        Password
-        <input id="auth-password" type="password" placeholder="Password" />
-      </label>
-      <div class="auth-actions">
-        <button id="login-btn" class="primary-btn">Sign In</button>
-      </div>
-      <p id="auth-message" class="auth-message"></p>
-    </div>
-    <button id="create-account-btn" class="ghost-btn auth-create-btn">Create a new account</button>
-  </main>
-
-  <div class="app-shell hidden" id="game-screen">
+  <div class="app-shell" id="game-screen">
     <header class="topbar">
       <div>
         <p class="eyebrow">Private Game</p>
@@ -47,6 +27,10 @@
         <article class="status-card">
           <span>Balance</span>
           <strong id="balance">0</strong>
+        </article>
+        <article class="status-card">
+          <span>Cash</span>
+          <strong id="cash-value">$0.00</strong>
         </article>
         <article class="status-card">
           <span>Current bet</span>
@@ -113,14 +97,15 @@
         <input id="admin-password" type="password" placeholder="Password" />
       </label>
       <label>
-        Add tokens
+        Token amount
         <input id="admin-amount" type="number" min="1" value="50" />
       </label>
       <div class="modal-actions">
         <button id="admin-save" class="primary-btn">Add Coins</button>
+        <button id="admin-withdraw" class="secondary-btn">Remove Coins</button>
         <button id="admin-cancel" class="secondary-btn">Cancel</button>
       </div>
-      <p class="modal-note">Password required to add tokens.</p>
+      <p class="modal-note">Password required to add or remove tokens.</p>
     </div>
   </div>
   <div class="overlay hidden" id="overlay"></div>

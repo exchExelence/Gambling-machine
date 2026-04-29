@@ -23,17 +23,11 @@ const spinThresholds = [
 const nonCherrySymbols = ["lemon", "orange", "plum", "bell", "diamond"];
 const STATE_STORAGE_KEY = "tokenCasinoState";
 let users = {};
-let currentUserId = null;
+let currentUserId = "player1";
 
-const authScreen = document.getElementById("auth-screen");
-const gameScreen = document.getElementById("game-screen");
-const authUsernameInput = document.getElementById("auth-username");
-const authPasswordInput = document.getElementById("auth-password");
-const loginBtn = document.getElementById("login-btn");
-const createAccountBtn = document.getElementById("create-account-btn");
-const authMessageEl = document.getElementById("auth-message");
 const playerIdEl = document.getElementById("player-id");
 const balanceEl = document.getElementById("balance");
+const cashEl = document.getElementById("cash-value");
 const resultTextEl = document.getElementById("result-text");
 const reelEls = [
   document.getElementById("reel-0"),
@@ -91,10 +85,17 @@ function loadState() {
     if (!("balance" in user)) {
       user.balance = STARTING_BALANCE;
     }
-    if (!("password" in user)) {
-      user.password = "";
-    }
   });
+
+  if (!currentUserId || !users[currentUserId]) {
+    const firstUser = Object.keys(users)[0];
+    if (firstUser) {
+      currentUserId = firstUser;
+    } else {
+      currentUserId = "player1";
+      users[currentUserId] = { balance: STARTING_BALANCE };
+    }
+  }
 }
 
 function saveState() {
@@ -117,62 +118,6 @@ function setCurrentBalance(amount) {
   const user = getCurrentUser();
   if (!user) return;
   user.balance = Math.max(0, Math.round(amount));
-}
-
-function showAuth(message = "") {
-  authScreen.classList.remove("hidden");
-  gameScreen.classList.add("hidden");
-  if (message) {
-    authMessageEl.textContent = message;
-  } else {
-    authMessageEl.textContent = "";
-  }
-}
-
-function showGame() {
-  authScreen.classList.add("hidden");
-  gameScreen.classList.remove("hidden");
-  authMessageEl.textContent = "";
-  validateBet();
-  updateUI(`Welcome ${currentUserId}!`);
-}
-
-function loginUser() {
-  const username = String(authUsernameInput.value || "").trim();
-  const password = String(authPasswordInput.value || "");
-  if (!username || !password) {
-    authMessageEl.textContent = "Enter both username and password.";
-    return;
-  }
-  const user = users[username];
-  if (!user) {
-    authMessageEl.textContent = "Account not found. Create a new account below.";
-    return;
-  }
-  if (user.password !== password) {
-    authMessageEl.textContent = "Invalid password.";
-    return;
-  }
-  currentUserId = username;
-  saveState();
-  showGame();
-}
-
-function createNewAccount() {
-  const username = String(authUsernameInput.value || "").trim();
-  const password = String(authPasswordInput.value || "");
-  if (!username || !password) {
-    authMessageEl.textContent = "Enter both username and password to create an account.";
-    return;
-  }
-  if (users[username]) {
-    authMessageEl.textContent = "This username is already in use.";
-    return;
-  }
-  users[username] = { balance: STARTING_BALANCE, password };
-  currentUserId = username;
-  saveState();
-  showGame();
 }
 
 function setCurrentUser(userId, createIfMissing = false) {
@@ -198,9 +143,14 @@ function setCurrentUser(userId, createIfMissing = false) {
   return true;
 }
 
+function formatCash(amount) {
+  return `$${(amount / 100).toFixed(2)}`;
+}
+
 function updateUI(message = "Ready to spin") {
   playerIdEl.textContent = currentUserId || "Guest";
   balanceEl.textContent = getCurrentBalance().toString();
+  cashEl.textContent = formatCash(getCurrentBalance());
   betDisplay.textContent = betInput.value;
   resultTextEl.textContent = message;
   saveState();
@@ -381,11 +331,26 @@ function addAdminCoins() {
   }
   const amount = Number(adminAmount.value || 0);
   if (amount <= 0) {
-    resultTextEl.textContent = "Enter a positive top-up amount.";
+    resultTextEl.textContent = "Enter a positive token amount.";
     return;
   }
   setCurrentBalance(getCurrentBalance() + amount);
-  updateUI(`Owner added ${amount} coins to ${currentUserId}.`);
+  updateUI(`Owner added ${amount} tokens to ${currentUserId}.`);
+  closeAdmin();
+}
+
+function removeAdminCoins() {
+  if (adminPassword.value !== ADMIN_PASSWORD) {
+    resultTextEl.textContent = "Incorrect owner password.";
+    return;
+  }
+  const amount = Number(adminAmount.value || 0);
+  if (amount <= 0) {
+    resultTextEl.textContent = "Enter a positive token amount.";
+    return;
+  }
+  setCurrentBalance(getCurrentBalance() - amount);
+  updateUI(`Owner removed ${amount} tokens from ${currentUserId}.`);
   closeAdmin();
 }
 
@@ -416,19 +381,12 @@ loadUserBtn.addEventListener("click", () => {
 newUserBtn.addEventListener("click", () => {
   setCurrentUser(userIdInput.value, true);
 });
-authUsernameInput.addEventListener("keypress", (event) => {
-  if (event.key === "Enter") loginUser();
-});
-authPasswordInput.addEventListener("keypress", (event) => {
-  if (event.key === "Enter") loginUser();
-});
-loginBtn.addEventListener("click", loginUser);
-createAccountBtn.addEventListener("click", createNewAccount);
 adminBtn.addEventListener("click", openAdmin);
 adminCancel.addEventListener("click", closeAdmin);
 adminSave.addEventListener("click", addAdminCoins);
+document.getElementById("admin-withdraw").addEventListener("click", removeAdminCoins);
 overlay.addEventListener("click", closeAdmin);
 
 loadState();
-showAuth();
 validateBet();
+updateUI();
