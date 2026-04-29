@@ -1,4 +1,5 @@
 const STARTING_BALANCE = 0;
+const APP_VERSION = 5;
 const ADMIN_PASSWORD = "050211"; // Change this before sharing
 const symbolIcons = {
   diamond: "♦️",
@@ -24,7 +25,6 @@ const nonCherrySymbols = ["lemon", "orange", "plum", "bell", "diamond"];
 const STATE_STORAGE_KEY = "tokenCasinoState";
 let users = {};
 let currentUserId = "player1";
-let adminAuthenticated = false;
 
 const balanceEl = document.getElementById("balance");
 const cashEl = document.getElementById("cash-value");
@@ -42,10 +42,11 @@ const stopBtn = document.getElementById("stop-btn");
 const betDownBtn = document.getElementById("bet-down");
 const betUpBtn = document.getElementById("bet-up");
 const adminBtn = document.getElementById("admin-btn");
-const adminModal = document.getElementById("admin-modal");
-const overlay = document.getElementById("overlay");
+const adminMenu = document.getElementById("admin-dropdown");
+const adminPasswordInput = document.getElementById("admin-password");
+const versionLabel = document.getElementById("version-label");
 const adminSave = document.getElementById("admin-save");
-const adminCancel = document.getElementById("admin-cancel");
+const adminClose = document.getElementById("admin-close");
 const adminAmount = document.getElementById("admin-amount");
 
 const spinState = {
@@ -147,6 +148,9 @@ function updateUI(message = "Ready to spin") {
   balanceEl.textContent = getCurrentBalance().toString();
   if (cashEl) {
     cashEl.textContent = formatCash(getCurrentBalance());
+  }
+  if (versionLabel) {
+    versionLabel.textContent = `v${APP_VERSION}`;
   }
   betDisplay.textContent = betInput.value;
   resultTextEl.textContent = message;
@@ -310,28 +314,34 @@ function validateBet() {
 }
 
 function openAdmin() {
-  const password = prompt("Enter admin password:");
-  if (password === null) return;
-  if (password !== ADMIN_PASSWORD) {
-    resultTextEl.textContent = "Incorrect admin password.";
+  if (!adminMenu) return;
+  const isOpen = !adminMenu.classList.contains("hidden");
+  if (isOpen) {
+    closeAdmin();
     return;
   }
-  adminAuthenticated = true;
-  adminModal.classList.remove("hidden");
-  overlay.classList.remove("hidden");
+  adminMenu.classList.remove("hidden");
   adminAmount.value = "50";
+  adminPasswordInput.value = "";
 }
 
 function closeAdmin() {
-  adminModal.classList.add("hidden");
-  overlay.classList.add("hidden");
+  if (!adminMenu) return;
+  adminMenu.classList.add("hidden");
+}
+
+function isAdminPasswordValid() {
+  if (!adminPasswordInput) return false;
+  const password = String(adminPasswordInput.value || "");
+  if (password !== ADMIN_PASSWORD) {
+    resultTextEl.textContent = "Incorrect admin password.";
+    return false;
+  }
+  return true;
 }
 
 function addAdminCoins() {
-  if (!adminAuthenticated) {
-    resultTextEl.textContent = "Admin access required.";
-    return;
-  }
+  if (!isAdminPasswordValid()) return;
   const amount = Number(adminAmount.value || 0);
   if (amount <= 0) {
     resultTextEl.textContent = "Enter a positive token amount.";
@@ -343,10 +353,7 @@ function addAdminCoins() {
 }
 
 function removeAdminCoins() {
-  if (!adminAuthenticated) {
-    resultTextEl.textContent = "Admin access required.";
-    return;
-  }
+  if (!isAdminPasswordValid()) return;
   const amount = Number(adminAmount.value || 0);
   if (amount <= 0) {
     resultTextEl.textContent = "Enter a positive token amount.";
@@ -379,10 +386,16 @@ maxBtn.addEventListener("click", () => {
   validateBet();
 });
 adminBtn.addEventListener("click", openAdmin);
-adminCancel.addEventListener("click", closeAdmin);
+adminClose.addEventListener("click", closeAdmin);
 adminSave.addEventListener("click", addAdminCoins);
 document.getElementById("admin-withdraw").addEventListener("click", removeAdminCoins);
-overlay.addEventListener("click", closeAdmin);
+
+document.addEventListener("click", (event) => {
+  if (!adminMenu || adminMenu.classList.contains("hidden")) return;
+  const target = event.target;
+  if (target === adminBtn || adminMenu.contains(target)) return;
+  closeAdmin();
+});
 
 loadState();
 validateBet();
