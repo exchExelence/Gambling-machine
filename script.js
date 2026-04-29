@@ -1,5 +1,5 @@
 const STARTING_BALANCE = 0;
-const APP_VERSION = 9;
+const APP_VERSION = 11;
 const ADMIN_PASSWORD = "050211"; // Change this before sharing
 const symbolIcons = {
   diamond: "♦️",
@@ -48,6 +48,7 @@ const versionLabel = document.getElementById("version-label");
 const adminSave = document.getElementById("admin-save");
 const adminClose = document.getElementById("admin-close");
 const adminAmount = document.getElementById("admin-amount");
+const adminError = document.getElementById("admin-error");
 
 const spinState = {
   isSpinning: false,
@@ -337,6 +338,7 @@ function openAdmin() {
   adminMenu.classList.remove("hidden");
   adminAmount.value = "50";
   adminPasswordInput.value = "";
+  if (adminError) adminError.textContent = "";
 }
 
 function closeAdmin() {
@@ -348,13 +350,20 @@ function isAdminPasswordValid() {
   if (!adminPasswordInput) return false;
   const password = String(adminPasswordInput.value || "").trim();
   if (!password) {
-    resultTextEl.textContent = "Please enter the admin password.";
+    if (adminError) {
+      adminError.textContent = "Please enter the admin password.";
+      adminError.className = "admin-error";
+    }
     return false;
   }
   if (password !== ADMIN_PASSWORD) {
-    resultTextEl.textContent = "Incorrect admin password.";
+    if (adminError) {
+      adminError.textContent = "Incorrect admin password.";
+      adminError.className = "admin-error";
+    }
     return false;
   }
+  if (adminError) adminError.textContent = "";
   return true;
 }
 
@@ -362,24 +371,38 @@ function addAdminCoins() {
   if (!isAdminPasswordValid()) return;
   const amount = Number(adminAmount.value || 0);
   if (amount <= 0) {
-    resultTextEl.textContent = "Enter a positive token amount.";
+    if (adminError) {
+      adminError.textContent = "Enter a positive token amount.";
+      adminError.className = "admin-error";
+    }
     return;
   }
   setCurrentBalance(getCurrentBalance() + amount);
   updateUI(`Owner added ${amount} tokens to ${currentUserId}.`);
-  closeAdmin();
+  if (adminError) {
+    adminError.textContent = `Successfully added ${amount} tokens.`;
+    adminError.className = "admin-success";
+  }
+  // closeAdmin(); // Keep open for feedback
 }
 
 function removeAdminCoins() {
   if (!isAdminPasswordValid()) return;
   const amount = Number(adminAmount.value || 0);
   if (amount <= 0) {
-    resultTextEl.textContent = "Enter a positive token amount.";
+    if (adminError) {
+      adminError.textContent = "Enter a positive token amount.";
+      adminError.className = "admin-error";
+    }
     return;
   }
   setCurrentBalance(getCurrentBalance() - amount);
   updateUI(`Owner removed ${amount} tokens from ${currentUserId}.`);
-  closeAdmin();
+  if (adminError) {
+    adminError.textContent = `Successfully removed ${amount} tokens.`;
+    adminError.className = "admin-success";
+  }
+  // closeAdmin(); // Keep open for feedback
 }
 
 betInput.addEventListener("input", validateBet);
