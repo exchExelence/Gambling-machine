@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Token Casino</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Private Game</p>
+        <h1>Token Casino</h1>
+      </div>
+      <div class="topbar-end">
+        <span class="chip">House edge: 7%</span>
+        <button id="admin-btn" class="ghost-btn">ADMIN</button>
+      </div>
+    </header>
+
+    <main class="game-board">
+      <section class="status-grid">
+        <article class="status-card">
+          <span>Player</span>
+          <strong id="player-id">Guest</strong>
+        </article>
+        <article class="status-card">
+          <span>Balance</span>
+          <strong id="balance">150</strong>
+        </article>
+        <article class="status-card">
+          <span>Current bet</span>
+          <strong id="bet-display">10</strong>
+        </article>
+        <article class="status-card">
+          <span>Last result</span>
+          <strong id="result-text">Ready to spin</strong>
+        </article>
+      </section>
+
+      <section class="player-panel">
+        <label class="player-label">
+          Player ID
+          <input id="user-id-input" type="text" placeholder="Enter player ID" />
+        </label>
+        <div class="player-actions">
+          <button id="load-user-btn" class="secondary-btn">Load Player</button>
+          <button id="new-user-btn" class="ghost-btn">New Player</button>
+        </div>
+      </section>
+
+      <section class="reel-area">
+        <div class="reel" id="reel-0">?</div>
+        <div class="reel" id="reel-1">?</div>
+        <div class="reel" id="reel-2">?</div>
+      </section>
+
+      <section class="controls">
+        <div class="bet-controls">
+          <button id="bet-down" class="control-btn">-</button>
+          <input id="bet-input" type="number" min="1" value="10" />
+          <button id="bet-up" class="control-btn">+</button>
+        </div>
+        <div class="action-buttons">
+          <button id="max-btn" class="secondary-btn">Max Bet</button>
+          <button id="spin-btn" class="primary-btn">Spin</button>
+        </div>
+      </section>
+
+      <section class="paytable-card">
+        <h2>Pay Table</h2>
+        <div class="paytable-grid">
+          <div>3 Diamond</div><div>×50</div>
+          <div>3 Bell</div><div>×20</div>
+          <div>3 Plum</div><div>×10</div>
+          <div>3 Orange</div><div>×6</div>
+          <div>3 Lemon</div><div>×4</div>
+          <div>3 Cherry</div><div>×3</div>
+          <div>2 Cherry</div><div>×1.5</div>
+          <div>1 Cherry</div><div>×0.5</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="admin-modal">
+    <div class="modal-panel">
+      <h2>Owner Top-Up</h2>
+      <p>Enter the password and number of coins to add to the current player.</p>
+      <label>
+        Password
+        <input id="admin-password" type="password" placeholder="Owner password" />
+      </label>
+      <label>
+        Add tokens
+        <input id="admin-amount" type="number" min="1" value="50" />
+      </label>
+      <div class="modal-actions">
+        <button id="admin-save" class="primary-btn">Add Coins</button>
+        <button id="admin-cancel" class="secondary-btn">Cancel</button>
+      </div>
+      <p class="modal-note">Only the game owner can use this panel.</p>
+    </div>
+  </div>
+  <div class="overlay hidden" id="overlay"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
