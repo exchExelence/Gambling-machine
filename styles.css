@@ -44,6 +44,7 @@ button {
 
 .topbar {
   position: relative;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -469,7 +470,7 @@ button:hover {
   top: calc(100% + 12px);
   right: 24px;
   width: min(380px, calc(100% - 32px));
-  z-index: 22;
+  z-index: 9999;
 }
 
 .admin-panel {
